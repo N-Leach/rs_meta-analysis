@@ -12,6 +12,6 @@ writeLines(json_file, key_path)
 gs4_auth(path = key_path)
 
 # Read from or write to your Google Sheet
-sheet_url <- "https://docs.google.com/spreadsheets/d/your-google-sheet-id/edit"
+sheet_url <- "https://docs.google.com/spreadsheets/d/1weav3qdydHXLBYVfejVZH2wwSYKBZP9Xjb2y0Iw_q5Q/edit?gid=1068904194#gid=1068904194"
 data <- read_sheet(sheet_url)
 
