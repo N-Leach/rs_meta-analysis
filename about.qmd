@@ -14,7 +14,7 @@ library(kableExtra)
 library(gtsummary)
 library(geomtextpath)
 
-my_data <- read.csv("data/analysis_df.csv")
+my_data <- subset(data, dataset =="nina_2024")
 
 ies.da  <- escalc(xi = event , ni = total , data = my_data ,
                measure = "PFT",  # FT double  arcsine  transformation
