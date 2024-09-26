@@ -9,7 +9,6 @@ execute:
 
 ```{r}
 # Load used packages
-
 library(tidyverse)
 library(metafor)
 library(kableExtra)
