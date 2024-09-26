@@ -1,11 +1,216 @@
 ---
-title: "About"
+title: "Thesis Results Summary"
+execute:
+  echo: false
+  message: false
+  warning: false
+  enabled: true
 ---
 
-About this site
-
 ```{r}
-1 + 1
+library(tidyverse)
+library(metafor)
+library(kableExtra)
+library(gtsummary)
+library(geomtextpath)
+
+my_data <- read.csv("data/analysis_df.csv")
+
+ies.da  <- escalc(xi = event , ni = total , data = my_data ,
+               measure = "PFT",  # FT double  arcsine  transformation
+               slab=paste(AuthorYear, " Estimate ", esid)
+               ) 
+
+#transformation 
+my_data$PFT  <- escalc(xi = event , ni = total , data = my_data ,
+               measure = "PFT"  # FT double  arcsine  transformation
+               )$yi 
+my_data$PLN  <- escalc(xi = event , ni = total , data = my_data ,
+               measure = "PLN" # log transformed proportion
+               )$yi
+my_data$PLO  <- escalc(xi = event , ni = total , data = my_data ,
+               measure = "PLO" # logit transformed proportion (i.e., log odds)
+               )$yi
+my_data$PAS  <- escalc(xi = event , ni = total , data = my_data ,
+               measure = "PAS"
+               )$yi #arcsine square root transformed proportion (i.e., the angular transformation)
+
+ojs_define(my_data_ojs = my_data)
 ```
 
-dikdslksd
+## Collected Data
+
+```{ojs}
+// Initialize the data
+df = transpose(my_data_ojs);
+
+Plot.plot({
+  marks: [
+    Plot.frame(),
+    Plot.dot(df, {
+      y: "AuthorYear",
+      x: "OA_reported", 
+      fill: "SDG_theme",
+    }), 
+  ], 
+   grid: true,
+  // frame space
+  marginLeft:200, 
+  width: 800,
+  height: 500,
+  // y-&x- axis + title 
+  x: { 
+    label: "Reported Overall Accuracy", 
+    labelFontSize: 24,// ??: don't think this is doing anything
+    },  
+  y: { 
+    label: null,
+    tickFontSize: 40, // ?? 
+    },  
+  title: html`<span style="font-size: 24px; font-weight: bold;">Overall Accuracy Reported by Each Study</span>`, 
+  
+  // Include a legend for the color channel 
+  color: {
+    legend: true,
+  }
+});
+```
+
+## Distribution
+
+\[ADD TEXT\]
+
+```{ojs}
+// Create a dropdown to select the transformation
+viewof transformation = Inputs.select(["Raw Proportion", , "Freeman-Tukey double arcsine transformed", "Log transformed", "Logit transformed",
+"Arcsine square root transformed" ], {label: "Select Transformation"});
+// Create a reactive dataset based on the selected transformation
+transformedData = df.map(row => {
+  if (transformation === "Log transformed") {
+    return { ...row, effect_size: row.PLN };
+    
+  } else if (transformation === "Freeman-Tukey double arcsine transformed") {
+    return { ...row, effect_size: row.PFT };
+    
+  } else if (transformation === "Logit transformed") {
+    return { ...row, effect_size: row.PLO }; 
+    
+  } else if (transformation === "Arcsine square root transformed") {
+    return { ...row, effect_size: row.PAS }; 
+    
+  } else {
+    return { ...row, effect_size: row.OA_reported }; // Original data
+  }
+});
+
+
+```
+
+```{ojs}
+
+
+// Plot based on the selected transformation
+Plot.plot({
+  round: true,
+  color: {legend: true},
+  marks: [
+    Plot.rectY(transformedData, Plot.binX({y2: "count"}, {x: "effect_size"})),
+    Plot.ruleY([0])
+  ], 
+  y: {
+    domain: [0, 45]
+    }, 
+  x: {
+  label: "Effect Size"
+}
+})
+```
+
+## Predictors
+
+\[ADD TEXT\]
+
+```{r sum_table}
+# important study feature labels 
+feature_labels <- list(OA_reported = "Overall Accuracy", total = "Sample Size", 
+                       model_group = "Machine Learning Model Group", 
+                       indices = "Indices Used", 
+                       classification_type = "Classification Type",  
+                       ancillary = "Ancillary Data", SDG_theme = "SDG Goal", 
+                       fraction_majority_class = "Majority Class Propotion", 
+                       RS_device_group = "RS Device Group", 
+                       RS_spatital_res_grouped = "RS Spatial resolution (m)", 
+                       globalCitationsCount = "Citation Number" )
+# summary table 
+
+summary_table <- ies.da |>
+  select(OA_reported, total,fraction_majority_class, 
+         model_group, SDG_theme, classification_type, 
+         indices, ancillary, RS_device_group, RS_spatital_res_grouped, 
+         globalCitationsCount
+         )|>
+  tbl_summary(
+  #  # by = model_group,
+    statistic = list(
+      all_continuous() ~ "{mean} ({min} - {max})",
+      all_categorical() ~ "{n} ({p}%)"
+    ),
+    label = feature_labels,
+    digits = all_continuous() ~ 2,
+    missing = "no"
+  ) |>
+ # add_overall() |>
+  modify_header(label = "Feature") |>
+  modify_header(all_stat_cols() ~ "{level}")|>
+  as_kable(booktabs = TRUE, linesep = "")
+
+
+summary_table|>
+  kable_styling(font_size = 10, 
+                full_width = FALSE)|>
+  #column_spec(1, width = "7cm")|>
+  #column_spec(2, width = "6cm")|>
+  row_spec(c(0:4, 8, 12, 16:18, 23, 29),  bold = TRUE)|>
+  add_indent(c(5:7,9:11,13:15, 19:22, 24:28))
+```
+
+## Model
+
+Something something
+
+![Model-averaged predictor importance plot. The averaged importance of each predictor across all models is displayed. The majority class proportion is the most important predictor, followed by the inclusion of ancillary data and the use of indices.](images/fig-best_mod.png){width="673"}
+
+## Results
+
+```{r}
+meta_reg_22 <- rma.mv(yi, vi,
+  data = ies.da ,
+  random = ~ 1 | AuthorYear / esid,
+  tdist = TRUE,
+  method = "REML",
+  test="t", 
+  dfs="contain", 
+  mods = ~ ancillary+fraction_majority_class+ indices
+)
+```
+
+![Bubble plot showing the observed effect size, overall accuracy of the individual studies plotted against a the proportion of the majority class. Based on the mixed-effects meta-regression model, the overall accuracy as a function of proportion of the majority with corresponding 95% confidence interval bounds. The size of the points are proportional to the weight that the observation received in the analysis, while the color of the points is unique to each study, with the lowest overall actuary from each study labeled with the first author and publication year.](images/fig-bubble.png){fig-align="center" width="584" height="667"}
+
+```{r}
+ies.da$preds <- predict(meta_reg_22, transf = transf.ipft.hm, targ =list(ni=1/(meta_reg_22$se)^2))$pred
+
+ggplot(ies.da, aes(x = OA_reported, y = preds))+
+  geom_point(size = 5, aes(colour = as.factor(ancillary)), alpha = 0.7)+
+  geom_smooth(method = "lm",formula = 'y ~ x',  se = FALSE, colour = "grey", linetype= "dashed", linewidth = 0.8)+
+  # y = x line 
+  geom_textabline(label = "y = x", intercept = 0, slope = 1,hjust = 0.2,  linetype= "longdash")+
+  xlim(c(0.64, 1))+
+  ylim(c(0.64,1))+
+  labs(x = "Reported Overall Accuracy", 
+       y = "Predicted Overall Accuracy", 
+       title = "Plot of Observed Agaist Predicted Accuracy Based on the Meta-regression Model.")+
+    theme(legend.text = element_text(size = 8), 
+          legend.position = "top") 
+```
+
+Observed and predicted overall accuracy. The colour indicates whether the addition of ancillary data in the primary study's model. The line of perfect agreement $y = x$ is in black and fit regression line in grey.

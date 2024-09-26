@@ -2,12 +2,13 @@ project:
   type: website
 
 website:
-  title: "rs_meta-analysis"
-  navbar:
-    left:
+  title: "Meta-analysis Overall Accuracy in Remote Sensing"
+  sidebar:
+    contents: 
       - href: index.qmd
         text: Home
-      - about.qmd
+      - href: about.qmd
+        text: About
 
 format:
   html:
