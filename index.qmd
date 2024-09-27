@@ -1,7 +1,0 @@
----
-title: "rs_meta-analysis"
----
-
-```{r}
-head(data)
-```

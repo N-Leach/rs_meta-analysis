@@ -1,0 +1,72 @@
+[
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "Thesis Results Summary",
+    "section": "",
+    "text": "df = transpose(my_data_ojs);\n\nPlot.plot({\n  marks: [\n    Plot.frame(),\n    Plot.dot(df, {\n      y: \"AuthorYear\",\n      x: \"OA_reported\", \n      fill: \"SDG_theme\",\n    }), \n  ], \n   grid: true,\n  // frame space\n  marginLeft:200, \n  width: 800,\n  height: 500,\n  // y-&x- axis + title \n  x: { \n    label: \"Reported Overall Accuracy\", \n    labelFontSize: 24,// ??: don't think this is doing anything\n    },  \n  y: { \n    label: null,\n    tickFontSize: 40, // ?? \n    },  \n  title: html`&lt;span style=\"font-size: 24px; font-weight: bold;\"&gt;Overall Accuracy Reported by Each Study&lt;/span&gt;`, \n  \n  // Include a legend for the color channel \n  color: {\n    legend: true,\n  }\n});",
+    "crumbs": [
+      "About"
+    ]
+  },
+  {
+    "objectID": "about.html#collected-data",
+    "href": "about.html#collected-data",
+    "title": "Thesis Results Summary",
+    "section": "",
+    "text": "df = transpose(my_data_ojs);\n\nPlot.plot({\n  marks: [\n    Plot.frame(),\n    Plot.dot(df, {\n      y: \"AuthorYear\",\n      x: \"OA_reported\", \n      fill: \"SDG_theme\",\n    }), \n  ], \n   grid: true,\n  // frame space\n  marginLeft:200, \n  width: 800,\n  height: 500,\n  // y-&x- axis + title \n  x: { \n    label: \"Reported Overall Accuracy\", \n    labelFontSize: 24,// ??: don't think this is doing anything\n    },  \n  y: { \n    label: null,\n    tickFontSize: 40, // ?? \n    },  \n  title: html`&lt;span style=\"font-size: 24px; font-weight: bold;\"&gt;Overall Accuracy Reported by Each Study&lt;/span&gt;`, \n  \n  // Include a legend for the color channel \n  color: {\n    legend: true,\n  }\n});",
+    "crumbs": [
+      "About"
+    ]
+  },
+  {
+    "objectID": "about.html#distribution",
+    "href": "about.html#distribution",
+    "title": "Thesis Results Summary",
+    "section": "Distribution",
+    "text": "Distribution\n[ADD TEXT]\n\nviewof transformation = Inputs.select([\"Raw Proportion\", , \"Freeman-Tukey double arcsine transformed\", \"Log transformed\", \"Logit transformed\",\n\"Arcsine square root transformed\" ], {label: \"Select Transformation\"});\n// Create a reactive dataset based on the selected transformation\ntransformedData = df.map(row =&gt; {\n  if (transformation === \"Log transformed\") {\n    return { ...row, effect_size: row.PLN };\n    \n  } else if (transformation === \"Freeman-Tukey double arcsine transformed\") {\n    return { ...row, effect_size: row.PFT };\n    \n  } else if (transformation === \"Logit transformed\") {\n    return { ...row, effect_size: row.PLO }; \n    \n  } else if (transformation === \"Arcsine square root transformed\") {\n    return { ...row, effect_size: row.PAS }; \n    \n  } else {\n    return { ...row, effect_size: row.OA_reported }; // Original data\n  }\n});\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n// Plot based on the selected transformation\nPlot.plot({\n  round: true,\n  color: {legend: true},\n  marks: [\n    Plot.rectY(transformedData, Plot.binX({y2: \"count\"}, {x: \"effect_size\"})),\n    Plot.ruleY([0])\n  ], \n  y: {\n    domain: [0, 45]\n    }, \n  x: {\n  label: \"Effect Size\"\n}\n})",
+    "crumbs": [
+      "About"
+    ]
+  },
+  {
+    "objectID": "about.html#predictors",
+    "href": "about.html#predictors",
+    "title": "Thesis Results Summary",
+    "section": "Predictors",
+    "text": "Predictors\n[ADD TEXT]\n\n\n\n\n\nFeature\nOverall\n\n\n\n\nOverall Accuracy\n0.90 (0.65 - 1.00)\n\n\nSample Size\n6,401,352.08 (259.00 - 75,782,016.00)\n\n\nMajority Class Propotion\n0.72 (0.14 - 1.00)\n\n\nMachine Learning Model Group\n\n\n\nNeural Networks\n41 (48%)\n\n\nOther\n6 (7.0%)\n\n\nTree-Based Models\n39 (45%)\n\n\nSDG Goal\n\n\n\nSDG 11: Sustainable Cities and Communities\n38 (44%)\n\n\nSDG 15: Life on Land\n37 (43%)\n\n\nSDG 2: Zero Hunger\n11 (13%)\n\n\nClassification Type\n\n\n\nObject-level\n46 (53%)\n\n\nPixel-level\n36 (42%)\n\n\nUnclear\n4 (4.7%)\n\n\nIndices Used\n63 (73%)\n\n\nAncillary Data\n15 (17%)\n\n\nRS Device Group\n\n\n\nLandsat\n15 (17%)\n\n\nNot Reported\n7 (8.1%)\n\n\nOther\n44 (51%)\n\n\nSentinel\n20 (23%)\n\n\nRS Spatial resolution (m)\n\n\n\n&gt;1\n7 (8.1%)\n\n\n10\n15 (17%)\n\n\n15-25\n16 (19%)\n\n\n30\n8 (9.3%)\n\n\nNot Reported\n40 (47%)\n\n\nCitation Number\n14.84 (2.00 - 68.00)",
+    "crumbs": [
+      "About"
+    ]
+  },
+  {
+    "objectID": "about.html#model",
+    "href": "about.html#model",
+    "title": "Thesis Results Summary",
+    "section": "Model",
+    "text": "Model\nSomething something\n\n\n\nModel-averaged predictor importance plot. The averaged importance of each predictor across all models is displayed. The majority class proportion is the most important predictor, followed by the inclusion of ancillary data and the use of indices.",
+    "crumbs": [
+      "About"
+    ]
+  },
+  {
+    "objectID": "about.html#results",
+    "href": "about.html#results",
+    "title": "Thesis Results Summary",
+    "section": "Results",
+    "text": "Results\n\n\n\nBubble plot showing the observed effect size, overall accuracy of the individual studies plotted against a the proportion of the majority class. Based on the mixed-effects meta-regression model, the overall accuracy as a function of proportion of the majority with corresponding 95% confidence interval bounds. The size of the points are proportional to the weight that the observation received in the analysis, while the color of the points is unique to each study, with the lowest overall actuary from each study labeled with the first author and publication year.\n\n\n\n\n\n\n\n\n\n\n\nObserved and predicted overall accuracy. The colour indicates whether the addition of ancillary data in the primary study’s model. The line of perfect agreement \\(y = x\\) is in black and fit regression line in grey.",
+    "crumbs": [
+      "About"
+    ]
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "rs_meta-analysis",
+    "section": "",
+    "text": "head(data)\n\n                                                                            \n1 function (..., list = character(), package = NULL, lib.loc = NULL,        \n2     verbose = getOption(\"verbose\"), envir = .GlobalEnv, overwrite = TRUE) \n3 {                                                                         \n4     fileExt &lt;- function(x) {                                              \n5         db &lt;- grepl(\"\\\\\\\\.[^.]+\\\\\\\\.(gz|bz2|xz)$\", x)                     \n6         ans &lt;- sub(\".*\\\\\\\\.\", \"\", x)",
+    "crumbs": [
+      "Home"
+    ]
+  }
+]
