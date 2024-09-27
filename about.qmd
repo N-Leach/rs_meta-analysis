@@ -17,9 +17,10 @@ library(geomtextpath)
 library(googlesheets4)
 library(gargle)
 
-source("google_sheet_reader.R")
+#source("google_sheet_reader.R")
 
-my_data <- subset(data, dataset =="nina_2024")
+#my_data <- subset(data, dataset =="nina_2024")
+my_data <- read.csv("data/analysis_df.csv")
 
 ies.da  <- escalc(xi = event , ni = total , data = my_data ,
                measure = "PFT",  # FT double  arcsine  transformation

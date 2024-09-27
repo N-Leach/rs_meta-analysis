@@ -1,9 +1,9 @@
+name: Quarto Publish and scrape
+
 on:
   workflow_dispatch:
   push:
     branches: main
-
-name: Quarto Publish
 
 jobs:
   build-deploy:
@@ -26,6 +26,18 @@ jobs:
         uses: r-lib/actions/setup-renv@v2
         with:
           cache-version: 1
+    
+      - name: Install additional R dependencies
+        run: |
+          Rscript -e 'install.packages("googlesheets4")'
+          Rscript -e 'install.packages("gargle")'
+
+     
+      - name: Run Google Sheets Script
+        env:
+          GOOGLE_SERVICE_ACCOUNT_KEY: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_KEY }}
+        run: |
+          Rscript google_sheet_reader.R
 
       - name: Render and Publish
         uses: quarto-dev/quarto-actions/publish@v2
