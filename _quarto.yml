@@ -9,6 +9,8 @@ website:
         text: Home
       - href: about.qmd
         text: About
+      - href: analysis.qmd
+        text: Redo the analysis
 
 format:
   html:

@@ -11,11 +11,75 @@ execute:
 
 ```{webr-r}
 #| context:setup
-library(googlesheets4)
-library(penguins)
+## there is also context: output to show output without code
+
+library(tidyverse)
+library(metafor)
+library(dmetar)
+
 ```
+
+The data I collected as well as the data from ... is available here... 
+
+I choose to set unknown totals to 100 ... add justification 
+
+push requests can be made to add data here: maybe I will figure out how to fix the gogle doc sync 
+
 
 ```{webr-r}
+# set totals = NA to 100
+data <- read.csv("https://raw.githubusercontent.com/N-Leach/rs_meta-analysis_data/refs/heads/main/data/all_data.csv")
 
-head(penguins)
+data$total <- ifelse(is.na(data$total), 100, data$total)
+
+
+# Function to calculate various effect sizes and to estimate the variance 
+## for the traditional meta analysis
+
+ies.da  <- escalc(xi = event , ni = total , data = data,
+               measure = "PFT",  # FT double  arcsine  transformation
+               slab=paste(AuthorYear, " Estimate ", esid)
+               ) 
+
 ```
+
+
+```{webr-r}
+# METHOD: Weighted: Nested level 3model
+pes.da.lvl3 <- rma.mv(yi,
+                      vi,
+                      data = ies.da ,
+                      tdist = TRUE,
+        # adding random effects at the study level and effect size 
+                      random = ~ 1 | AuthorYear / esid,
+                      method = "REML",
+                      # recommendations from the function documentation:
+                      test="t",  
+                      dfs="contain"
+                    )
+
+summary(pes.da.lvl3)
+```
+add forest plot 
+
+
+study features 
+
+Add drop down table of study features 
+
+link to website about model selection 
+
+```{webr-r}
+set.seed(123)
+multimodel.inference(TE = "yi", 
+                     seTE = "se",
+                     data = ies.da,
+                     predictors = c("model_group", "ancillary",
+                              "Publication.Year", "indices"),
+                     interaction = FALSE)
+```
+
+
+
+
+
