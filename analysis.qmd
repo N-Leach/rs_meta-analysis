@@ -9,13 +9,83 @@ execute:
   warning: false
 ---
 
-```{webr-r}
+``` {webr-r}
 #| context:setup
-library(googlesheets4)
-library(penguins)
+## there is also context: output to show output without code
+
+library(tidyverse)
+library(metafor)
+library(dmetar)
+
+# data
+rs_data <- read.csv("https://raw.githubusercontent.com/N-Leach/rs_meta-analysis_data/refs/heads/main/data/all_data.csv")
+# making by paper estimate id 
+rs_data <- rs_data |> group_by(AuthorYear) |> mutate(esid = row_number())
 ```
 
-```{webr-r}
+The data I collected as well as the data from Khatami et al (2016) is available here (link) push requests can be made to add data here: maybe I will figure out how to fix the google doc sync
 
-head(penguins)
+Khatami et al (2016) do not use sample totals, for illustration I set the unknown totals to 100. 
+``` {webr-r}
+# set totals = NA to 100
+rs_data$total <- ifelse(is.na(rs_data$total), 100, rs_data$total)
+```
+
+Event is OA: as a percentage  
+
+``` {webr-r}
+
+rs_data$event <- rs_data$total*rs_data$OA_reported
+
+```
+
+If you only want to analysis my data, or data you have added you can subset this data
+
+``` {webr-r}
+# rs_data <- subset(rs_data, rs_data$dataset == "nina_2024" )
+```
+
+Using metagear: 
+Function to calculate various effect sizes and to estimate the variance, here the FT double arcsine transformation is applied 
+
+```{webr}
+ies.da  <- escalc(xi = OA_reported , ni = total , data = rs_data,
+               measure = "PFT",  # FT double  arcsine  transformation
+               slab=paste(AuthorYear, " Estimate ", esid)
+               ) 
+```
+
+``` {webr-r}
+# METHOD: Weighted: Nested level 3model
+pes.da.lvl3 <- rma.mv(yi,
+                      vi,
+                      data = ies.da ,
+                      tdist = TRUE,
+        # adding random effects at the study level and effect size 
+                      random = ~ 1 | AuthorYear / esid,
+                      method = "REML",
+                      # recommendations from the function documentation:
+                      test="t",  
+                      dfs="contain"
+                    )
+
+summary(pes.da.lvl3)
+```
+
+add forest plot
+
+study features
+
+Add drop down table of study features
+
+link to website about model selection
+
+``` {webr-r}
+set.seed(123)
+multimodel.inference(TE = "yi", 
+                     seTE = "se",
+                     data = ies.da,
+                     predictors = c("model_group", "ancillary",
+                              "Publication.Year", "indices"),
+                     interaction = FALSE)
 ```

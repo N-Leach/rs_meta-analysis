@@ -17,29 +17,36 @@ library(geomtextpath)
 library(googlesheets4)
 library(gargle)
 
-#source("google_sheet_reader.R")
+my_data <- read.csv("https://raw.githubusercontent.com/N-Leach/rs_meta-analysis/refs/heads/main/data/my_data.csv")
 
-#my_data <- subset(data, dataset =="nina_2024")
-my_data <- read.csv("data/analysis_df.csv")
+my_data$event <- my_data$OA_reported * my_data$total 
+
+my_data <- my_data |> group_by(AuthorYear) |> mutate(esid = row_number())
 
 ies.da  <- escalc(xi = event , ni = total , data = my_data ,
                measure = "PFT",  # FT double  arcsine  transformation
                slab=paste(AuthorYear, " Estimate ", esid)
                ) 
 
-#transformation 
-my_data$PFT  <- escalc(xi = event , ni = total , data = my_data ,
-               measure = "PFT"  # FT double  arcsine  transformation
-               )$yi 
-my_data$PLN  <- escalc(xi = event , ni = total , data = my_data ,
-               measure = "PLN" # log transformed proportion
-               )$yi
-my_data$PLO  <- escalc(xi = event , ni = total , data = my_data ,
-               measure = "PLO" # logit transformed proportion (i.e., log odds)
-               )$yi
-my_data$PAS  <- escalc(xi = event , ni = total , data = my_data ,
-               measure = "PAS"
-               )$yi #arcsine square root transformed proportion (i.e., the angular transformation)
+# Calculate effect sizes (yi) and variances (vi) for each transformation
+my_data$raw_vi <- sqrt((my_data$OA_reported * (1 - my_data$OA_reported))/ my_data$total)
+
+# Freeman-Tukey double arcsine transformation (PFT)
+my_data$PFT_yi <- escalc(xi = my_data$event, ni = my_data$total, measure = "PFT")$yi
+my_data$PFT_vi <- escalc(xi = my_data$event, ni = my_data$total, measure = "PFT")$vi
+
+# Log transformed proportion (PLN)
+my_data$PLN_yi <- escalc(xi = my_data$event, ni = my_data$total, measure = "PLN")$yi
+my_data$PLN_vi <- escalc(xi = my_data$event, ni = my_data$total, measure = "PLN")$vi
+
+# Logit transformed proportion (PLO)
+my_data$PLO_yi <- escalc(xi = my_data$event, ni = my_data$total, measure = "PLO")$yi
+my_data$PLO_vi <- escalc(xi = my_data$event, ni = my_data$total, measure = "PLO")$vi
+
+# Arcsine square root transformation (PAS)
+my_data$PAS_yi <- escalc(xi = my_data$event, ni = my_data$total, measure = "PAS")$yi
+my_data$PAS_vi <- escalc(xi = my_data$event, ni = my_data$total, measure = "PAS")$vi
+
 
 ojs_define(my_data_ojs = my_data)
 ```
@@ -87,50 +94,77 @@ Plot.plot({
 \[ADD TEXT\]
 
 ```{ojs}
-// Create a dropdown to select the transformation
-viewof transformation = Inputs.select(["Raw Proportion", , "Freeman-Tukey double arcsine transformed", "Log transformed", "Logit transformed",
-"Arcsine square root transformed" ], {label: "Select Transformation"});
-// Create a reactive dataset based on the selected transformation
+// Dropdown to select between effect sizes and variances
+viewof plotType = Inputs.select(["Effect Size", "Variance"], {label: "Select Parameter"});
+
+// Dropdown to select the transformation
+viewof transformation = Inputs.select([
+  "Raw Proportion", 
+  "Freeman-Tukey double arcsine transformed", 
+  "Log transformed", 
+  "Logit transformed", 
+  "Arcsine square root transformed"
+], {label: "Select Transformation"});
+
+
+
+
+// Create a reactive dataset based on the selected transformation and plot type
 transformedData = df.map(row => {
-  if (transformation === "Log transformed") {
-    return { ...row, effect_size: row.PLN };
-    
-  } else if (transformation === "Freeman-Tukey double arcsine transformed") {
-    return { ...row, effect_size: row.PFT };
-    
-  } else if (transformation === "Logit transformed") {
-    return { ...row, effect_size: row.PLO }; 
-    
-  } else if (transformation === "Arcsine square root transformed") {
-    return { ...row, effect_size: row.PAS }; 
-    
+  if (plotType === "Variance") {
+    if (transformation === "Log transformed") {
+      return { ...row, value: row.PLN_vi };
+    } else if (transformation === "Freeman-Tukey double arcsine transformed") {
+      return { ...row, value: row.PFT_vi };
+    } else if (transformation === "Logit transformed") {
+      return { ...row, value: row.PLO_vi };
+    } else if (transformation === "Arcsine square root transformed") {
+      return { ...row, value: row.PAS_vi };
+    } else {
+      return { ...row, value: row.raw_vi }; // Original data (variance is not applicable here)
+    }
   } else {
-    return { ...row, effect_size: row.OA_reported }; // Original data
+    // Plot effect sizes (default behavior)
+    if (transformation === "Log transformed") {
+      return { ...row, value: row.PLN_yi };
+    } else if (transformation === "Freeman-Tukey double arcsine transformed") {
+      return { ...row, value: row.PFT_yi };
+    } else if (transformation === "Logit transformed") {
+      return { ...row, value: row.PLO_yi };
+    } else if (transformation === "Arcsine square root transformed") {
+      return { ...row, value: row.PAS_yi };
+    } else {
+      return { ...row, value: row.OA_reported }; // Original data
+    }
   }
 });
+
 
 
 ```
 
 ```{ojs}
 
-
-// Plot based on the selected transformation
+// Plot based on the selected transformation and plot type
 Plot.plot({
   round: true,
   color: {legend: true},
   marks: [
-    Plot.rectY(transformedData, Plot.binX({y2: "count"}, {x: "effect_size"})),
+    Plot.rectY(transformedData, Plot.binX({y2: "count"}, {x: "value"})),
     Plot.ruleY([0])
   ], 
-  y: {
-    domain: [0, 45]
-    }, 
+ // y: {
+   // domain: [0, 45]  // Adjust y-axis based on your data
+//  }, 
   x: {
-  label: "Effect Size"
-}
-})
+    label: plotType === "Variance" ? "Variance" : "Effect Size"  // Label changes based on plot type
+  }
+});
+
 ```
+
+
+
 
 ## Predictors
 
