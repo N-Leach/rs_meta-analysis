@@ -1,5 +1,15 @@
 [
   {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "rs_meta-analysis",
+    "section": "",
+    "text": "head(data)\n\n                                                                            \n1 function (..., list = character(), package = NULL, lib.loc = NULL,        \n2     verbose = getOption(\"verbose\"), envir = .GlobalEnv, overwrite = TRUE) \n3 {                                                                         \n4     fileExt &lt;- function(x) {                                              \n5         db &lt;- grepl(\"\\\\\\\\.[^.]+\\\\\\\\.(gz|bz2|xz)$\", x)                     \n6         ans &lt;- sub(\".*\\\\\\\\.\", \"\", x)",
+    "crumbs": [
+      "Home"
+    ]
+  },
+  {
     "objectID": "about.html",
     "href": "about.html",
     "title": "Thesis Results Summary",
@@ -34,7 +44,7 @@
     "href": "about.html#predictors",
     "title": "Thesis Results Summary",
     "section": "Predictors",
-    "text": "Predictors\n[ADD TEXT]\n\n\n\n\n\nFeature\nOverall\n\n\n\n\nOverall Accuracy\n0.90 (0.65 - 1.00)\n\n\nSample Size\n6,401,352.08 (259.00 - 75,782,016.00)\n\n\nMajority Class Propotion\n0.72 (0.14 - 1.00)\n\n\nMachine Learning Model Group\n\n\n\nNeural Networks\n41 (48%)\n\n\nOther\n6 (7.0%)\n\n\nTree-Based Models\n39 (45%)\n\n\nSDG Goal\n\n\n\nSDG 11: Sustainable Cities and Communities\n38 (44%)\n\n\nSDG 15: Life on Land\n37 (43%)\n\n\nSDG 2: Zero Hunger\n11 (13%)\n\n\nClassification Type\n\n\n\nObject-level\n46 (53%)\n\n\nPixel-level\n36 (42%)\n\n\nUnclear\n4 (4.7%)\n\n\nIndices Used\n63 (73%)\n\n\nAncillary Data\n15 (17%)\n\n\nRS Device Group\n\n\n\nLandsat\n15 (17%)\n\n\nNot Reported\n7 (8.1%)\n\n\nOther\n44 (51%)\n\n\nSentinel\n20 (23%)\n\n\nRS Spatial resolution (m)\n\n\n\n&gt;1\n7 (8.1%)\n\n\n10\n15 (17%)\n\n\n15-25\n16 (19%)\n\n\n30\n8 (9.3%)\n\n\nNot Reported\n40 (47%)\n\n\nCitation Number\n14.84 (2.00 - 68.00)",
+    "text": "Predictors\n[ADD TEXT]\n\n\n\n\n\nFeature\nOverall\n\n\n\n\nOverall Accuracy\n0.90 (0.65 - 1.00)\n\n\nSample Size\n6,401,352.08 (259.00 - 75,782,016.00)\n\n\nMajority Class Propotion\n0.72 (0.14 - 1.00)\n\n\nMachine Learning Model Group\n\n\n\nNeural Networks\n41 (48%)\n\n\nOther\n6 (7.0%)\n\n\nTree-Based Models\n39 (45%)\n\n\nSDG Goal\n\n\n\nSDG11: Sustainable Cities\n38 (44%)\n\n\nSDG15: Life on Land\n37 (43%)\n\n\nSDG2: Zero Hunger\n11 (13%)\n\n\nClassification Type\n\n\n\nObject-level\n46 (53%)\n\n\nPixel-level\n36 (42%)\n\n\nUnclear\n4 (4.7%)\n\n\nIndices Used\n\n\n\nNot Used\n23 (27%)\n\n\nUsed\n63 (73%)\n\n\nAncillary Data\n\n\n\nAncillary Data Included\n15 (17%)\n\n\nRemote Sensing Only\n71 (83%)\n\n\nRS Device Group\n\n\n\nLandsat\n15 (17%)\n\n\nNot Reported\n7 (8.1%)\n\n\nOther\n44 (51%)\n\n\nSentinel\n20 (23%)\n\n\nRS Spatial resolution (m)\n\n\n\n&lt;1 metre\n7 (8.1%)\n\n\n10-30 metres\n39 (45%)\n\n\nNot Reported\n40 (47%)\n\n\nCitation Number\n14.84 (2.00 - 68.00)",
     "crumbs": [
       "About"
     ]
@@ -60,21 +70,11 @@
     ]
   },
   {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "rs_meta-analysis",
-    "section": "",
-    "text": "head(data)\n\n                                                                            \n1 function (..., list = character(), package = NULL, lib.loc = NULL,        \n2     verbose = getOption(\"verbose\"), envir = .GlobalEnv, overwrite = TRUE) \n3 {                                                                         \n4     fileExt &lt;- function(x) {                                              \n5         db &lt;- grepl(\"\\\\\\\\.[^.]+\\\\\\\\.(gz|bz2|xz)$\", x)                     \n6         ans &lt;- sub(\".*\\\\\\\\.\", \"\", x)",
-    "crumbs": [
-      "Home"
-    ]
-  },
-  {
     "objectID": "analysis.html",
     "href": "analysis.html",
     "title": "webR in Quarto HTML Documents",
     "section": "",
-    "text": "Please enable JavaScript to experience the dynamic code cell content on this page.\nThe data I collected as well as the data from … is available here…\nI choose to set unknown totals to 100 … add justification\npush requests can be made to add data here: maybe I will figure out how to fix the gogle doc sync\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\nadd forest plot\nstudy features\nAdd drop down table of study features\nlink to website about model selection\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.",
+    "text": "Please enable JavaScript to experience the dynamic code cell content on this page.\nThe data I collected as well as the data from Khatami et al (2016) is available here (link) push requests can be made to add data here: maybe I will figure out how to fix the google doc sync\nKhatami et al (2016) do not use sample totals, for illustration I set the unknown totals to 100.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\nEvent is OA: as a percentage\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\nIf you only want to analysis my data, or data you have added you can subset this data\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\nUsing metagear: Function to calculate various effect sizes and to estimate the variance, here the FT double arcsine transformation is applied\n\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\nadd forest plot\nstudy features\nAdd drop down table of study features\nlink to website about model selection\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.",
     "crumbs": [
       "Redo the analysis"
     ]
