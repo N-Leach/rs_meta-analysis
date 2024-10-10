@@ -1,15 +1,5 @@
 [
   {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "rs_meta-analysis",
-    "section": "",
-    "text": "head(data)\n\n                                                                            \n1 function (..., list = character(), package = NULL, lib.loc = NULL,        \n2     verbose = getOption(\"verbose\"), envir = .GlobalEnv, overwrite = TRUE) \n3 {                                                                         \n4     fileExt &lt;- function(x) {                                              \n5         db &lt;- grepl(\"\\\\\\\\.[^.]+\\\\\\\\.(gz|bz2|xz)$\", x)                     \n6         ans &lt;- sub(\".*\\\\\\\\.\", \"\", x)",
-    "crumbs": [
-      "Home"
-    ]
-  },
-  {
     "objectID": "about.html",
     "href": "about.html",
     "title": "Thesis Results Summary",
@@ -67,6 +57,16 @@
     "text": "Results\n\n\n\nBubble plot showing the observed effect size, overall accuracy of the individual studies plotted against a the proportion of the majority class. Based on the mixed-effects meta-regression model, the overall accuracy as a function of proportion of the majority with corresponding 95% confidence interval bounds. The size of the points are proportional to the weight that the observation received in the analysis, while the color of the points is unique to each study, with the lowest overall actuary from each study labeled with the first author and publication year.\n\n\n\n\n\n\n\n\n\n\n\nObserved and predicted overall accuracy. The colour indicates whether the addition of ancillary data in the primary study’s model. The line of perfect agreement \\(y = x\\) is in black and fit regression line in grey.",
     "crumbs": [
       "About"
+    ]
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "rs_meta-analysis",
+    "section": "",
+    "text": "head(data)\n\n                                                                            \n1 function (..., list = character(), package = NULL, lib.loc = NULL,        \n2     verbose = getOption(\"verbose\"), envir = .GlobalEnv, overwrite = TRUE) \n3 {                                                                         \n4     fileExt &lt;- function(x) {                                              \n5         db &lt;- grepl(\"\\\\\\\\.[^.]+\\\\\\\\.(gz|bz2|xz)$\", x)                     \n6         ans &lt;- sub(\".*\\\\\\\\.\", \"\", x)",
+    "crumbs": [
+      "Home"
     ]
   },
   {
